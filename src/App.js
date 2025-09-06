@@ -2270,9 +2270,7 @@ function App() {
 
   return (
     <div>
-      <div className="header">
-        <img src="/logo.svg" alt="Thai Trip Planner" style={{ height: '60px', width: 'auto' }} />
-      </div>
+
       
       {showMap ? renderMap() : (
         <>
