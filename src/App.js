@@ -76,37 +76,57 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   
-  // Popular trips data
-  const [popularTrips] = useState([
-    {
-      id: 'popular-1',
-      name: 'ทริปกรุงเทพ 2 วัน 1 คืน',
-      province: 'กรุงเทพมหานคร',
-      days: 2,
-      items: [
-        { id: '1', name: 'วัดพระแก้ว', type: 'attraction', description: 'วัดที่สำคัญที่สุดในประเทศไทย' },
-        { id: '2', name: 'ผัดไทย', type: 'food', description: 'เส้นผัดรสชาติหวานเปรี้ยว' },
-        { id: '3', name: 'ล่องเรือแม่น้ำเจ้าพระยา', type: 'activity', description: 'ชมวิวกรุงเทพฯ จากแม่น้ำ' }
-      ],
-      rating: 4.8,
-      reviews: 156,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'popular-2',
-      name: 'ทริปเชียงใหม่ 3 วัน 2 คืน',
-      province: 'เชียงใหม่',
-      days: 3,
-      items: [
-        { id: '4', name: 'วัดพระธาตุดอยสุเทพ', type: 'attraction', description: 'วัดที่มีชื่อเสียงของเชียงใหม่' },
-        { id: '5', name: 'ข้าวซอย', type: 'food', description: 'อาหารพื้นเมืองเชียงใหม่' },
-        { id: '6', name: 'ดำน้ำดูปะการัง', type: 'activity', description: 'ดำน้ำชมปะการังสวยงาม' }
-      ],
-      rating: 4.6,
-      reviews: 89,
-      createdAt: new Date().toISOString()
+  // Random trip generator data
+  const [randomTrips, setRandomTrips] = useState([]);
+  
+  // Generate random trip for a province
+  const generateRandomTrip = (province) => {
+    const provinceAttractions = attractions.filter(a => a.province_id === province.id);
+    const provinceFoods = foods.filter(f => f.province_id === province.id);
+    const provinceActivities = activities.filter(a => a.province_id === province.id);
+    
+    // Randomly select items (1-2 attractions, 1-2 foods, 1 activity)
+    const selectedAttractions = provinceAttractions
+      .sort(() => 0.5 - Math.random())
+      .slice(0, Math.floor(Math.random() * 2) + 1);
+    
+    const selectedFoods = provinceFoods
+      .sort(() => 0.5 - Math.random())
+      .slice(0, Math.floor(Math.random() * 2) + 1);
+    
+    const selectedActivities = provinceActivities
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 1);
+    
+    const allItems = [
+      ...selectedAttractions.map(item => ({ ...item, type: 'attraction' })),
+      ...selectedFoods.map(item => ({ ...item, type: 'food' })),
+      ...selectedActivities.map(item => ({ ...item, type: 'activity' }))
+    ];
+    
+    const days = Math.min(Math.max(Math.ceil(allItems.length / 2), 1), 4);
+    
+    return {
+      id: `random-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: `ทริป${province.name} ${days} วัน`,
+      province: province.name,
+      days: days,
+      items: allItems,
+      rating: (Math.random() * 1.5 + 3.5).toFixed(1),
+      reviews: Math.floor(Math.random() * 200) + 20,
+      createdAt: new Date().toISOString(),
+      isRandom: true
+    };
+  };
+  
+  // Generate random trips for available provinces
+  useEffect(() => {
+    if (provinces.length > 0 && attractions.length > 0 && foods.length > 0 && activities.length > 0) {
+      const shuffledProvinces = provinces.sort(() => 0.5 - Math.random());
+      const trips = shuffledProvinces.slice(0, 4).map(province => generateRandomTrip(province));
+      setRandomTrips(trips);
     }
-  ]);
+  }, [provinces, attractions, foods, activities]);
 
   // Save trips to localStorage whenever trips change
   useEffect(() => {
@@ -436,17 +456,17 @@ function App() {
     setIsSearching(false);
   };
   
-  // Use popular trip
-  const usePopularTrip = (popularTrip) => {
+  // Use random trip
+  const useRandomTrip = (randomTrip) => {
     const newTrip = {
-      ...popularTrip,
+      ...randomTrip,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
-      isPopular: true
+      isRandom: true
     };
     
     setTrips(prev => [...prev, newTrip]);
-    alert(`เพิ่มทริป "${popularTrip.name}" เรียบร้อยแล้ว!`);
+    alert(`เพิ่มทริป "${randomTrip.name}" เรียบร้อยแล้ว! 🎲`);
   };
 
   // Handle search input
@@ -918,11 +938,39 @@ function App() {
           </div>
         )}
         
-        {/* Popular Trips Section */}
+        {/* Random Trip Generator Section */}
         <div style={{ marginTop: '24px' }}>
-          <h3 style={{ color: '#374151', marginBottom: '16px' }}>🌟 ทริปยอดนิยม</h3>
+          <h3 style={{ color: '#374151', marginBottom: '16px' }}>🎲 ทริปจัดให้</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <p style={{ color: '#6b7280', margin: 0 }}>ระบบสุ่มสถานที่ ร้านอาหาร และกิจกรรมให้คุณ</p>
+            <button
+               onClick={() => {
+                 if (provinces.length > 0) {
+                   const shuffledProvinces = provinces.sort(() => 0.5 - Math.random());
+                   const trips = shuffledProvinces.slice(0, 4).map(province => generateRandomTrip(province));
+                   setRandomTrips(trips);
+                 }
+               }}
+              style={{
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '6px 12px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <span>🎲</span>
+              สุ่มใหม่
+            </button>
+          </div>
+          
           <div className="grid">
-            {popularTrips.map((trip) => (
+            {randomTrips.map((trip) => (
               <div key={trip.id} className="card" style={{ backgroundColor: '#fef7ff', border: '2px solid #e879f9' }}>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                   <h4 style={{ margin: 0, flex: 1 }}>{trip.name}</h4>
@@ -955,10 +1003,21 @@ function App() {
                       {item.name}
                     </span>
                   ))}
+                  {trip.items.length > 3 && (
+                    <span style={{
+                      fontSize: '12px',
+                      backgroundColor: '#f3e8ff',
+                      color: '#7c3aed',
+                      padding: '2px 6px',
+                      borderRadius: '4px'
+                    }}>
+                      +{trip.items.length - 3} อื่นๆ
+                    </span>
+                  )}
                 </div>
                 
                 <button
-                  onClick={() => usePopularTrip(trip)}
+                  onClick={() => useRandomTrip(trip)}
                   style={{
                     backgroundColor: '#8b5cf6',
                     color: 'white',
@@ -974,7 +1033,7 @@ function App() {
                     gap: '6px'
                   }}
                 >
-                  <span>✨</span>
+                  <span>🎯</span>
                   ใช้ทริปนี้
                 </button>
               </div>
