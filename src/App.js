@@ -78,6 +78,8 @@ function App() {
   
   // Random trip generator data
   const [randomTrips, setRandomTrips] = useState([]);
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [expenseForm, setExpenseForm] = useState({ description: '', amount: '' });
   
   // Generate random trip for a province
   const generateRandomTrip = (province) => {
@@ -1661,15 +1663,30 @@ function App() {
                    }}></div>
                  </div>
                  {trip.items.filter(item => item.completed).length === trip.items.length && trip.items.length > 0 && (
-                   <div style={{ fontSize: '12px', color: '#22c55e', fontWeight: 'bold', marginTop: '4px' }}>
-                     🎉 ทริปเสร็จสมบูรณ์!
-                   </div>
-                 )}
-               </div>
-               
-              <p style={{ fontSize: '12px', color: '#9ca3af' }}>
-                สร้างเมื่อ {new Date(trip.createdAt).toLocaleDateString('th-TH')}
-              </p>
+                    <div style={{ fontSize: '12px', color: '#22c55e', fontWeight: 'bold', marginTop: '4px' }}>
+                      🎉 ทริปเสร็จสมบูรณ์!
+                    </div>
+                  )}
+                </div>
+                
+                {/* Trip Expense Summary */}
+                {(trip.expenses && trip.expenses.length > 0) && (
+                  <div style={{ marginBottom: '8px', padding: '8px', backgroundColor: '#f0fdf4', borderRadius: '6px', border: '1px solid #bbf7d0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '12px', color: '#15803d', fontWeight: 'bold' }}>💰 ค่าใช้จ่ายรวม</span>
+                      <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#16a34a' }}>
+                        ฿{trip.expenses.reduce((sum, exp) => sum + exp.amount, 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#16a34a', marginTop: '2px' }}>
+                      {trip.expenses.length} รายการ • เฉลี่ย ฿{Math.round(trip.expenses.reduce((sum, exp) => sum + exp.amount, 0) / trip.days).toLocaleString()}/วัน
+                    </div>
+                  </div>
+                )}
+                
+               <p style={{ fontSize: '12px', color: '#9ca3af' }}>
+                 สร้างเมื่อ {new Date(trip.createdAt).toLocaleDateString('th-TH')}
+               </p>
               <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
                  <button 
                     onClick={(e) => {
@@ -1788,6 +1805,228 @@ function App() {
                 transition: 'width 0.3s ease'
               }}></div>
             </div>
+          </div>
+        </div>
+        
+        {/* Expense Tracker */}
+        <div className="card" style={{ backgroundColor: '#f0fdf4', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h3 style={{ color: '#374151', margin: 0 }}>💰 บันทึกรายจ่าย</h3>
+            <button
+               onClick={() => {
+                 setShowExpenseForm(true);
+                 setExpenseForm({ description: '', amount: '' });
+               }}
+              style={{
+                backgroundColor: '#22c55e',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                fontSize: '14px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              ➕ เพิ่มรายจ่าย
+            </button>
+          </div>
+          
+          {/* Expense Summary */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ textAlign: 'center', padding: '12px', backgroundColor: '#dcfce7', borderRadius: '8px' }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#16a34a' }}>
+                {(currentTrip.expenses || []).length}
+              </div>
+              <div style={{ fontSize: '12px', color: '#15803d' }}>รายการ</div>
+            </div>
+            <div style={{ textAlign: 'center', padding: '12px', backgroundColor: '#dcfce7', borderRadius: '8px' }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#16a34a' }}>
+                ฿{(currentTrip.expenses || []).reduce((sum, exp) => sum + exp.amount, 0).toLocaleString()}
+              </div>
+              <div style={{ fontSize: '12px', color: '#15803d' }}>รวมทั้งหมด</div>
+            </div>
+          </div>
+           
+           {/* Inline Add Expense Form */}
+           {showExpenseForm && (
+             <div style={{
+               backgroundColor: '#f9fafb',
+               border: '1px solid #d1d5db',
+               borderRadius: '8px',
+               padding: '16px',
+               marginBottom: '16px'
+             }}>
+                 <h4 style={{ margin: '0 0 12px 0', color: '#374151' }}>เพิ่มรายจ่ายใหม่</h4>
+                 
+                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                   <input
+                     type="text"
+                     value={expenseForm.description}
+                     onChange={(e) => setExpenseForm({ ...expenseForm, description: e.target.value })}
+                     placeholder="รายการค่าใช้จ่าย (เช่น ค่าอาหาร, ค่าเข้าชม)"
+                     style={{
+                       padding: '8px 12px',
+                       border: '1px solid #d1d5db',
+                       borderRadius: '6px',
+                       fontSize: '14px'
+                     }}
+                   />
+                   <input
+                     type="number"
+                     value={expenseForm.amount}
+                     onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
+                     placeholder="จำนวนเงิน (บาท)"
+                     min="0"
+                     step="0.01"
+                     style={{
+                       padding: '8px 12px',
+                       border: '1px solid #d1d5db',
+                       borderRadius: '6px',
+                       fontSize: '14px'
+                     }}
+                   />
+                 </div>
+                   
+                   <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                   <button
+                     onClick={() => {
+                       setShowExpenseForm(false);
+                       setExpenseForm({ description: '', amount: '' });
+                     }}
+                     style={{
+                         backgroundColor: '#6b7280',
+                         color: 'white',
+                         border: 'none',
+                         borderRadius: '6px',
+                         padding: '6px 12px',
+                         fontSize: '13px',
+                         cursor: 'pointer'
+                       }}
+                     >
+                       ยกเลิก
+                     </button>
+                     <button
+                       onClick={() => {
+                         if (expenseForm.description.trim() && expenseForm.amount && !isNaN(expenseForm.amount) && parseFloat(expenseForm.amount) > 0) {
+                           const expense = {
+                             id: Date.now().toString(),
+                             description: expenseForm.description.trim(),
+                             amount: parseFloat(expenseForm.amount),
+                             date: new Date().toISOString(),
+                             tripId: currentTrip.id
+                           };
+                           
+                           const updatedTrips = trips.map(trip => {
+                             if (trip.id === currentTrip.id) {
+                               return {
+                                 ...trip,
+                                 expenses: [...(trip.expenses || []), expense]
+                               };
+                             }
+                             return trip;
+                           });
+                           
+                           setTrips(updatedTrips);
+                           setCurrentTrip({
+                             ...currentTrip,
+                             expenses: [...(currentTrip.expenses || []), expense]
+                           });
+                           
+                           setShowExpenseForm(false);
+                           setExpenseForm({ description: '', amount: '' });
+                         } else {
+                           alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
+                         }
+                       }}
+                       style={{
+                         backgroundColor: '#22c55e',
+                         color: 'white',
+                         border: 'none',
+                         borderRadius: '6px',
+                         padding: '6px 12px',
+                         fontSize: '13px',
+                         cursor: 'pointer'
+                       }}
+                     >
+                       ✓ เพิ่ม
+                     </button>
+                   </div>
+               </div>
+             )}
+           
+           {/* Expense List */}
+          <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            {(currentTrip.expenses || []).length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                ยังไม่มีรายการค่าใช้จ่าย
+              </div>
+            ) : (
+              (currentTrip.expenses || []).map((expense) => (
+                <div key={expense.id} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '6px',
+                  marginBottom: '8px',
+                  border: '1px solid #e5e7eb'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 'bold', color: '#374151' }}>{expense.description}</div>
+                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      {new Date(expense.date).toLocaleDateString('th-TH', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#16a34a' }}>
+                      ฿{expense.amount.toLocaleString()}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (confirm('ต้องการลบรายการนี้หรือไม่?')) {
+                          const updatedTrips = trips.map(trip => {
+                            if (trip.id === currentTrip.id) {
+                              return {
+                                ...trip,
+                                expenses: (trip.expenses || []).filter(exp => exp.id !== expense.id)
+                              };
+                            }
+                            return trip;
+                          });
+                          
+                          setTrips(updatedTrips);
+                          setCurrentTrip({
+                            ...currentTrip,
+                            expenses: (currentTrip.expenses || []).filter(exp => exp.id !== expense.id)
+                          });
+                        }
+                      }}
+                      style={{
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '4px 6px',
+                        fontSize: '12px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
         
