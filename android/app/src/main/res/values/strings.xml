@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Thai Trip App</string>
+    <string name="title_activity_main">Thai Trip App</string>
+    <string name="package_name">com.thaitripapp.app</string>
+    <string name="custom_url_scheme">com.thaitripapp.app</string>
+</resources>

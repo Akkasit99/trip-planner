@@ -1,0 +1,50 @@
+{
+  "name": "thai-trip-app",
+  "version": "1.0.0",
+  "description": "Mini App จัดทริปท่องเที่ยวในประเทศไทย",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "qr": "node generate-qr.js",
+    "mobile:build": "npm run build && npx cap copy && npx cap sync",
+    "mobile:android": "npm run mobile:build && npx cap open android",
+    "mobile:run": "npx cap run android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@supabase/supabase-js": "^2.38.4",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.2",
+    "leaflet": "^1.9.4",
+    "qrcode": "^1.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.8.0",
+    "react-scripts": "5.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "typescript": "^4.9.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

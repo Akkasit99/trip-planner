@@ -1,0 +1,56 @@
+{
+  "name": "Thai Trip App - แอปวางแผนเที่ยวไทย",
+  "short_name": "Thai Trip",
+  "description": "แอปวางแผนการเดินทางท่องเที่ยวในประเทศไทย",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#10b981",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "lang": "th",
+  "categories": ["travel", "lifestyle", "navigation"],
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icon-192.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "My Trip",
+      "short_name": "ทริปของฉัน",
+      "description": "ดูทริปที่บันทึกไว้",
+      "url": "/?view=my-trips",
+      "icons": [{ "src": "icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "เลือกจังหวัด",
+      "short_name": "จังหวัด",
+      "description": "เลือกจังหวัดที่ต้องการเที่ยว",
+      "url": "/?view=provinces",
+      "icons": [{ "src": "icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
+}
