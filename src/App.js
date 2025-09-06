@@ -829,7 +829,41 @@ function App() {
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>🎒</span>
                 เลือกไว้ {selectedItems.length} รายการ
               </div>
-
+              
+              <button
+                onClick={() => setCurrentView('createTrip')}
+                style={{
+                  backgroundColor: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                  transition: 'all 0.2s ease',
+                  minWidth: '120px',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
+                  zIndex: 10
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.backgroundColor = '#059669';
+                  e.target.style.transform = 'translateY(-1px)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.backgroundColor = '#10b981';
+                  e.target.style.transform = 'translateY(0)';
+                }}
+              >
+                <span>🎯</span>
+                สร้างทริป
+              </button>
             </div>
             <div style={{
               display: 'flex',
@@ -1789,10 +1823,9 @@ function App() {
           {currentView === 'provinces' && renderProvinces()}
           {currentView === 'search' && renderSearch()}
           {currentView === 'detail' && renderProvinceDetail()}
-    
-      {currentView === 'create-trip' && renderCreateTrip()}
-      {currentView === 'my-trips' && renderMyTrips()}
-      {currentView === 'trip-detail' && currentTrip && renderTripDetail()}
+          {currentView === 'createTrip' && renderCreateTrip()}
+          {currentView === 'my-trips' && renderMyTrips()}
+          {currentView === 'trip-detail' && currentTrip && renderTripDetail()}
         </>
       )}
       
