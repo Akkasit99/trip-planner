@@ -1,6 +1,6 @@
 {
-  "name": "Thai Trip App - แอปวางแผนเที่ยวไทย",
-  "short_name": "Thai Trip",
+  "name": "Thai Trip Planner - แอปวางแผนเที่ยวไทย",
+  "short_name": "Thai Trip Planner",
   "description": "แอปวางแผนการเดินทางท่องเที่ยวในประเทศไทย",
   "start_url": "/",
   "display": "standalone",

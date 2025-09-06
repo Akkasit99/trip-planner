@@ -1,0 +1,20 @@
+<svg width="200" height="240" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pin shape background -->
+  <path d="M100 20 C130 20 155 45 155 75 C155 105 100 160 100 160 S45 105 45 75 C45 45 70 20 100 20 Z" fill="#2D5A5A" stroke="none"/>
+  
+  <!-- Inner pin circle -->
+  <circle cx="100" cy="75" r="28" fill="#4ECDC4" stroke="none"/>
+  
+  <!-- Curved path element -->
+  <path d="M85 65 Q90 55 95 65 Q100 75 105 65" fill="none" stroke="#2D5A5A" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Small dot -->
+  <circle cx="110" cy="65" r="2" fill="#2D5A5A"/>
+  
+  <!-- Yellow curved element -->
+  <path d="M95 85 Q105 95 115 105 Q125 115 135 125" fill="none" stroke="#FFD700" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Text -->
+  <text x="100" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2D5A5A">THAI TRIP</text>
+  <text x="100" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2D5A5A">PLANNER</text>
+</svg>

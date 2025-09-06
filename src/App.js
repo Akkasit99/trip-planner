@@ -750,8 +750,11 @@ function App() {
   const renderHome = () => (
     <div className="container">
       <div className="card">
-        <h2>🇹🇭 Thai Trip App</h2>
-        <p>Mini App จัดทริปท่องเที่ยวในประเทศไทย</p>
+        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+          <img src="/logo.svg" alt="Thai Trip Planner" style={{ height: '80px', width: 'auto' }} />
+          <h2 style={{ margin: '8px 0 0 0', color: '#2D5A5A', fontSize: '24px', fontWeight: 'bold' }}>Thai Trip Planner</h2>
+        </div>
+        <p style={{ textAlign: 'center', marginTop: '8px' }}>Mini App จัดทริปท่องเที่ยวในประเทศไทย</p>
         
         {isLoading && (
           <div style={{ 
@@ -2268,7 +2271,7 @@ function App() {
   return (
     <div>
       <div className="header">
-        <h1>🇹🇭 Thai Trip App</h1>
+        <img src="/logo.svg" alt="Thai Trip Planner" style={{ height: '60px', width: 'auto' }} />
       </div>
       
       {showMap ? renderMap() : (
