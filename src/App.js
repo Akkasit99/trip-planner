@@ -756,19 +756,7 @@ function App() {
         </div>
         <p style={{ textAlign: 'center', marginTop: '8px' }}>Mini App จัดทริปท่องเที่ยวในประเทศไทย</p>
         
-        {isLoading && (
-          <div style={{ 
-            marginBottom: '20px',
-            padding: '12px', 
-            background: '#f1f5f9', 
-            borderRadius: '8px',
-            border: '1px solid #e2e8f0',
-            color: '#64748b',
-            textAlign: 'center'
-          }}>
-            ⏳ กำลังโหลดข้อมูลจาก Supabase...
-          </div>
-        )}
+
         
         {dataLoadError && (
           <div style={{ 
