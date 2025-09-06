@@ -468,6 +468,45 @@ function App() {
     setTrips(prev => [...prev, newTrip]);
     alert(`เพิ่มทริป "${randomTrip.name}" เรียบร้อยแล้ว! 🎲`);
   };
+  
+  // Toggle item completion status
+  const toggleItemCompletion = (tripId, itemId, itemType) => {
+    setTrips(prev => prev.map(trip => {
+      if (trip.id === tripId) {
+        return {
+          ...trip,
+          items: trip.items.map(item => {
+            if (item.id === itemId && item.type === itemType) {
+              return {
+                ...item,
+                completed: !item.completed,
+                completedAt: !item.completed ? new Date().toISOString() : null
+              };
+            }
+            return item;
+          })
+        };
+      }
+      return trip;
+    }));
+    
+    // Update currentTrip if it's the same trip
+    if (currentTrip && currentTrip.id === tripId) {
+      setCurrentTrip(prev => ({
+        ...prev,
+        items: prev.items.map(item => {
+          if (item.id === itemId && item.type === itemType) {
+            return {
+              ...item,
+              completed: !item.completed,
+              completedAt: !item.completed ? new Date().toISOString() : null
+            };
+          }
+          return item;
+        })
+      }));
+    }
+  };
 
   // Handle search input
   const handleSearchChange = (e) => {
@@ -1597,6 +1636,37 @@ function App() {
                <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>
                  📍 {trip.province} • 📅 {trip.days} วัน • 📝 {trip.items.length} รายการ
                </p>
+               
+               {/* Trip Progress */}
+               <div style={{ marginBottom: '8px' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                   <span style={{ fontSize: '12px', color: '#6b7280' }}>ความคืบหน้า</span>
+                   <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#3b82f6' }}>
+                     {trip.items.filter(item => item.completed).length}/{trip.items.length} 
+                     ({trip.items.length > 0 ? Math.round((trip.items.filter(item => item.completed).length / trip.items.length) * 100) : 0}%)
+                   </span>
+                 </div>
+                 <div style={{ 
+                   width: '100%', 
+                   height: '4px', 
+                   backgroundColor: '#e5e7eb', 
+                   borderRadius: '2px',
+                   overflow: 'hidden'
+                 }}>
+                   <div style={{
+                     width: `${trip.items.length > 0 ? (trip.items.filter(item => item.completed).length / trip.items.length) * 100 : 0}%`,
+                     height: '100%',
+                     backgroundColor: trip.items.filter(item => item.completed).length === trip.items.length && trip.items.length > 0 ? '#22c55e' : '#3b82f6',
+                     transition: 'width 0.3s ease'
+                   }}></div>
+                 </div>
+                 {trip.items.filter(item => item.completed).length === trip.items.length && trip.items.length > 0 && (
+                   <div style={{ fontSize: '12px', color: '#22c55e', fontWeight: 'bold', marginTop: '4px' }}>
+                     🎉 ทริปเสร็จสมบูรณ์!
+                   </div>
+                 )}
+               </div>
+               
               <p style={{ fontSize: '12px', color: '#9ca3af' }}>
                 สร้างเมื่อ {new Date(trip.createdAt).toLocaleDateString('th-TH')}
               </p>
@@ -1676,8 +1746,52 @@ function App() {
           <p style={{ fontSize: '16px', color: '#64748b', marginBottom: '20px' }}>
             📍 {currentTrip.province} • 📅 {currentTrip.days} วัน • 📝 {currentTrip.items.length} รายการ
           </p>
+     </div>
+        
+        {/* Progress Summary */}
+        <div className="card" style={{ backgroundColor: '#f8fafc', marginBottom: '20px' }}>
+          <h3 style={{ color: '#374151', marginBottom: '16px' }}>📊 ความคืบหน้าทริป</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '16px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#22c55e' }}>
+                {currentTrip.items.filter(item => item.completed).length}
+              </div>
+              <div style={{ fontSize: '14px', color: '#6b7280' }}>เสร็จแล้ว</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f59e0b' }}>
+                {currentTrip.items.filter(item => !item.completed).length}
+              </div>
+              <div style={{ fontSize: '14px', color: '#6b7280' }}>ยังไม่เสร็จ</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#3b82f6' }}>
+                {currentTrip.items.length > 0 ? Math.round((currentTrip.items.filter(item => item.completed).length / currentTrip.items.length) * 100) : 0}%
+              </div>
+              <div style={{ fontSize: '14px', color: '#6b7280' }}>ความคืบหน้า</div>
+            </div>
+          </div>
           
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+          {/* Progress Bar */}
+          <div style={{ marginTop: '16px' }}>
+            <div style={{ 
+              width: '100%', 
+              height: '8px', 
+              backgroundColor: '#e5e7eb', 
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: `${currentTrip.items.length > 0 ? (currentTrip.items.filter(item => item.completed).length / currentTrip.items.length) * 100 : 0}%`,
+                height: '100%',
+                backgroundColor: '#22c55e',
+                transition: 'width 0.3s ease'
+              }}></div>
+            </div>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
             <button 
               onClick={() => shareTrip(currentTrip)}
               className="btn"
@@ -1687,7 +1801,6 @@ function App() {
             </button>
 
           </div>
-        </div>
         
         {schedule.map((daySchedule) => (
            <div key={daySchedule.day} className="card">
@@ -1744,15 +1857,58 @@ function App() {
                    const itemIndex = dayStartIndex + daySchedule.items.indexOf(item);
                    
                    return (
-                     <div key={globalIndex} className="card" style={{ backgroundColor: '#f9fafb', position: 'relative' }}>
+                     <div key={globalIndex} className="card" style={{ 
+                       backgroundColor: item.completed ? '#f0fdf4' : '#f9fafb', 
+                       position: 'relative',
+                       border: item.completed ? '2px solid #22c55e' : '1px solid #e5e7eb',
+                       opacity: item.completed ? 0.8 : 1
+                     }}>
                        <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '8px', paddingRight: '40px' }}>
+                          <button
+                            onClick={() => toggleItemCompletion(currentTrip.id, item.id, item.type)}
+                            style={{
+                              backgroundColor: item.completed ? '#22c55e' : '#e5e7eb',
+                              color: item.completed ? 'white' : '#6b7280',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '24px',
+                              height: '24px',
+                              fontSize: '14px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginRight: '8px',
+                              marginTop: '2px',
+                              flexShrink: 0
+                            }}
+                            title={item.completed ? 'ยกเลิกการทำเสร็จ' : 'ทำเสร็จแล้ว'}
+                          >
+                            {item.completed ? '✓' : ''}
+                          </button>
                           <span style={{ fontSize: '20px', marginRight: '8px', marginTop: '2px' }}>
                             {item.type === 'attraction' && '🏛️'}
                             {item.type === 'food' && '🍜'}
                             {item.type === 'activity' && '🎯'}
                           </span>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <h4 style={{ margin: 0, marginBottom: '4px', wordWrap: 'break-word' }}>{item.name}</h4>
+                            <h4 style={{ 
+                              margin: 0, 
+                              marginBottom: '4px', 
+                              wordWrap: 'break-word',
+                              textDecoration: item.completed ? 'line-through' : 'none',
+                              color: item.completed ? '#6b7280' : '#111827'
+                            }}>{item.name}</h4>
+                            {item.completed && item.completedAt && (
+                              <p style={{ 
+                                fontSize: '12px', 
+                                color: '#22c55e', 
+                                margin: '2px 0 4px 0',
+                                fontWeight: 'bold'
+                              }}>
+                                ✅ เสร็จเมื่อ: {new Date(item.completedAt).toLocaleString('th-TH')}
+                              </p>
+                            )}
                             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                               {itemIndex > 0 && (
                                 <button
